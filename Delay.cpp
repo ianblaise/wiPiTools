@@ -1,18 +1,18 @@
 #include "Delay.h"
-void pause(int dur)
+void pause(int duration)
 {
 	Delay d;
-	while (!d.over(dur)) {}
+	while (!d.over(duration)) {}
 }
 
-void Delay::start(int dur)
+void Delay::start(int duration)
 {
 	if (!_over) return;
-	start_clock = clock();
-	_duration = dur;
+	_clock = clock();
+	_duration = duration;
 }
 
-void Delay::fukkit()
+void Delay::cancel()
 {
 	_over = true;
 	_duration = 0;
@@ -20,7 +20,7 @@ void Delay::fukkit()
 
 bool Delay::over()
 {
-	if (clock() >= start_clock + _duration) {
+	if (clock() >= _clock + _duration) {
 		_over = true;
 		return _over;
 	}
@@ -28,27 +28,27 @@ bool Delay::over()
 	return _over;
 }
 
-bool Delay::over(int delay)
+bool Delay::over(int duration)
 {
-	this->start(delay);
+	this->start(duration);
 	return over();
 }
 
 int Delay::time_left() const
 {
-	return start_clock + _duration - clock();
+	return _clock + _duration - clock();
 }
 
 Delay::Delay()
 {
-	start_clock = std::clock();
+	_clock = std::clock();
 	_over = true;
 }
 
-Delay::Delay(int dur)
+Delay::Delay(int duration)
 {
 	Delay();
-	this->start(dur);
+	this->start(duration);
 }
 
 Delay::~Delay()
